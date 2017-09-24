@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>鼠标滑动特性</title>
+</head>
+<body style="margin:0;padding:0;">
+    <canvas id="canvas" style="display:block;background:#000000;">浏览器不支持canvas</canvas>
+    <script>
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        var w=c.width=window.innerWidth;
+        var h=c.height=window.innerHeight;
+        window.onresize=function(){
+            w=c.width=window.innerWidth;
+            w=c.height=window.innerHeight;
+        }
+        var p_arr=[];//用于存储粒子对象
+        
+        //定义圆粒子对象
+        function Particle(opt){
+            this.init(opt);
+        };
+        Particle.prototype={
+            //初始化方法
+            init:function(opt){//定义一个参数，接收json数据
+                this.x=opt.x || 0;
+                this.y=opt.y || 0;
+                this.r=random(5,20);
+                this.color=random(color_arr);//随机颜色
+
+                this.rr=random(2,8);//随机扩散半径
+                this.aa=random(0,2*Math.PI);//随机扩散角度
+                this.vx=Math.cos(this.aa)*this.rr;//角动量x
+                this.vy=Math.sin(this.aa)*this.rr;//角动量y
+            },
+            //绘画方法
+            draw:function(){
+                ctx.beginPath();
+                ctx.fillStyle=this.color;
+                ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+                ctx.globalCompositeOperation='lighter';//将白色圆绘制在其他圆上
+                ctx.fill();
+            },
+            updata:function(){//粒子运动
+                this.x+=this.vx;
+                this.y+=this.vy;
+
+                //沿着原先角度运动
+                this.vx+=Math.cos(this.aa)*0.1;//偏移0.1
+                this.vy+=Math.sin(this.aa)*0.1;
+
+                //*一个衰减系数,速度衰减
+                this.vx*=0.92;
+                this.vy*=0.92;
+
+                //变小
+                this.r*=0.96;
+            }
+        }
+
+        //粒子运动
+        render();        
+        function render(){
+            ctx.clearRect(0,0,w,h);
+            for(var i=0,len=p_arr.length;i<len;i++){//遍历对象数组，产生每一个小球
+                p_arr[i].draw();
+                p_arr[i].updata();
+            }
+            requestAnimationFrame(render);//帧动画递归
+        }
+        // var p=new Particle({x:100,y:100,r:50});
+        // p.draw();
+        c.onmousemove=function(e){//鼠标移动事件
+            //console.log(e.pageX,e.pageY);
+            var ex=e.pageX,
+                ey=e.pageY;
+            for(var i=0;i<random(2,10);i++){//使粒子数量变多
+                spawn(ex,ey);
+            }
+            console.log(p_arr.length);
+        }
+
+        //孵化器 专门用来实例化对象
+        function spawn(ex,ey){
+            var p=new Particle({x:ex,y:ey});
+            p_arr.push(p);
+            //性能优化
+            if(p_arr.length>800){
+                p_arr.shift();//从数组最前删除
+            }
+        }
+
+        var color_arr=["#dcd625","#f44336","#9c27b0","#2196f3","#4caf50","#cddc39","#ff9800"];
+        //随机数封装
+        function random(min,max){
+            //复合型函数，可处理数组和数字
+            //算法取整 ~~位运算,取反2次
+            if(min.sort){//如果有sort排序方法，那么传入参数min是数组
+                return min[~~(Math.random()*min.length)];
+            }else{
+                return ~~(Math.random()*(max-min)+min);
+            }
+        }
+        //判断是否是数组
+        //console.log(Array.isArray(p_arr));//1,返回true
+        // function isArray(obj){          //2,兼容ie7以下
+        //     return Object.prototype.toString.call(obj)==="[object Array]"
+        // }
+    </script>
+</body>
+</html>

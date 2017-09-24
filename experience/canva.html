@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>时钟</title>
+		<style type="text/css">
+		*{
+			overflow: hidden;
+		}
+			div{
+				width: 700px;
+				margin: 20px auto;
+			}
+			#clock{
+				border: 0px solid #CCCCCC;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="aid">
+			<canvas id="clock" width="600px" height="600px"></canvas>
+		</div>
+		
+		
+		<script type="text/javascript">
+			var dom=document.getElementById('clock');
+			var ctx=dom.getContext('2d');
+			var width=ctx.canvas.width;//获取画布宽度
+			var height=ctx.canvas.height;
+			var r=width/2; 
+			
+			function drawBackground(){
+				ctx.save();
+				ctx.translate(r,r);//画起始坐标在左上角，重置起始点坐标为中心
+				ctx.beginPath();//重置路径或起始路径
+				ctx.lineWidth=10;//线条宽度
+				ctx.arc(0,0,r-5,0,2*Math.PI,false);
+				ctx.stroke();
+				
+				var hourNumbers=[3,4,5,6,7,8,9,10,11,12,1,2];
+				ctx.font='54px';
+				ctx.textAlign='center';//设置或返回文本内容的当前对齐方式。
+				ctx.textBaseline='middle';//设置或返回在绘制文本时使用的当前文本基线。
+				hourNumbers.forEach(function(num,i){
+					var rad=2*Math.PI/12*i;
+					var x=Math.cos(rad)*(r-30);
+					var y=Math.sin(rad)*(r-30);
+					ctx.fillText(num,x,y);//在画布上绘制"被填充的"文本。
+				});
+				
+				
+				for(var i=0;i<60;i++){
+					var rad=2*Math.PI/60*i;
+					var x=Math.cos(rad)*(r-18);
+					var y=Math.sin(rad)*(r-18);
+					ctx.beginPath();//	起始一条路径，或重置当前路径。
+					if(i%5===0){
+						ctx.fillStyle='black';//	设置或返回用于填充绘画的颜色、渐变或模式。
+						ctx.arc(x,y,2,0,2*Math.PI,false);//创建弧/曲线（用于创建圆形或部分圆）
+					}else{
+						ctx.fillStyle='#CCCCCC';//	设置或返回用于填充绘画的颜色、渐变或模式。
+						ctx.arc(x,y,2,0,2*Math.PI,false);//创建弧/曲线（用于创建圆形或部分圆）
+					}
+					ctx.fill();//填充当前绘图（路径）。
+				}
+			}
+			
+			function drawHour(hour,min){
+				ctx.save();//保存之前的状态
+				ctx.beginPath();
+				var rad=2*Math.PI/12*hour;
+				var mrad=2*Math.PI/12/60*min;
+				ctx.rotate(rad+mrad);//旋转
+				ctx.lineWidth=6;//线宽
+				ctx.lineCap='round';//设置线头尾
+				ctx.moveTo(0,10);//把路径移动到画布中的指定点，不创建线条。
+				ctx.lineTo(0,-r/2);//添加一个新点，然后在画布中创建从该点到最后指定点的线条。
+				ctx.stroke();//	绘制已定义的路径。
+				ctx.restore();//返回之前保存过的路径状态和属性。
+			}
+			function drawMin(min){
+				ctx.save();//保存之前的状态
+				ctx.beginPath();
+				var rad=2*Math.PI/60*min;
+				ctx.rotate(rad);//旋转
+				ctx.lineWidth=3;//线宽
+				ctx.lineCap='round';//设置线头尾
+				ctx.moveTo(0,10);//把路径移动到画布中的指定点，不创建线条。
+				ctx.lineTo(0,-(r-30));//添加一个新点，然后在画布中创建从该点到最后指定点的线条。
+				ctx.stroke();//	绘制已定义的路径。
+				ctx.restore();//返回之前保存过的路径状态和属性。
+			}
+			function drawS(s){
+				ctx.save();//保存之前的状态
+				ctx.beginPath();
+				var rad=2*Math.PI/60*s;
+				ctx.rotate(rad);//旋转
+				ctx.fillStyle='red';
+				ctx.moveTo(-2,20);//把路径移动到画布中的指定点，不创建线条。
+				ctx.lineTo(2,20);//添加一个新点，然后在画布中创建从该点到最后指定点的线条。
+				ctx.lineTo(1,-(r-18));//添加一个新点，然后在画布中创建从该点到最后指定点的线条。
+				ctx.lineTo(-1,-(r-18));//添加一个新点，然后在画布中创建从该点到最后指定点的线条。
+				ctx.fill();//	绘制已定义的路径。
+				ctx.restore();//返回之前保存过的路径状态和属性。
+			}
+			
+			function drawDot(){
+				ctx.beginPath();
+				ctx.fillStyle='white';
+				ctx.arc(0,0,3,0,2*Math.PI,true);
+				ctx.fill();
+			}
+			
+			
+			function draw(){
+				ctx.clearRect(0,0,width,height);//	在给定的矩形内清除指定的像素。
+				var now=new Date();
+				var hour=now.getHours();
+				var min=now.getMinutes();
+				var s=now.getSeconds();
+				drawBackground();
+				drawHour(hour,min);
+				drawMin(min);
+				drawS(s);
+				drawDot();
+				ctx.restore();
+			}
+			draw();
+			setInterval(draw,1000);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,196 @@
+*{
+    margin: 0px;padding: 0px;
+}
+
+.bg{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    filter: blur(50px);/*高斯模糊*/
+}
+.bg-img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: no-repeat 50% 50%;
+    background-size: cover;
+    animation: spin 20s infinite linear;
+    opacity: 1;
+    transform: scale(1.2);
+}
+@for $i from 1 to 6{
+    .bg-img:nth-child(#{$i}){
+        animation-name: spin-#{$i};
+        z-index: $i;
+    }
+}
+@keyframes spin-5{
+    0%{
+        opacity: 1;
+        transform:scale(1.2); 
+    }
+    20%{
+        opacity: 0;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1.2)
+    }
+    95%{
+        opacity: 0;
+        transform: scale(1.23)
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@keyframes spin-4{
+    15%{
+        opacity: 1;
+        transform:scale(1.2); 
+    }
+    40%{
+        opacity: 0;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1.2)
+    }
+}
+@keyframes spin-3{
+    35%{
+        opacity: 1;
+        transform:scale(1.2); 
+    }
+    60%{
+        opacity: 0;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1.2)
+    }
+}
+@keyframes spin-2{
+    55%{
+        opacity: 1;
+        transform:scale(1.2); 
+    }
+    80%{
+        opacity: 0;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1.2)
+    }
+}
+@keyframes spin-1{
+    75%{
+        opacity: 1;
+        transform:scale(1.2); 
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+.door{
+    position: absolute;
+    background: transparent;
+    display: block;
+    width: 500px;
+    height: 500px;
+    border: 10px solid black;
+    border-radius: 260px;
+    z-index: 10;
+    color: black;
+    text-align: center;
+    line-height:500px;
+    font-weight: bold;
+    font-size: 100px;
+    margin:auto;
+    left: 0px;
+    top:0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.5s;
+    cursor: pointer;    
+    &:hover{
+        background: radial-gradient(circle,rgba(0,0,0,0.1),rgba(0,0,0,0.6),rgba(0,0,0,1));
+        color: rgba(255,255,255,0.6);
+    }
+    &:after{
+        content: '';
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border: 5px solid rgba(0, 0, 0, 0.47);
+        border-radius: 260px;
+        margin:auto;
+        left: -5px;
+        top:0;
+        right: 0;
+        bottom: 0;
+        animation: btn 1.5s infinite;
+    }
+}
+@keyframes btn{
+    0%{transform: scale(1.0);}
+    100%{
+        transform: scale(1.2);
+        border-color: rgba(0,0,0,0);
+    }
+}
+.left-sidebar{
+    position: absolute;
+    display: block;
+    width: 165px;
+    background: rgba(255,255,255,0.6);
+    z-index: 7;
+    top:0;
+    left: -165px;
+    bottom: 0;
+    transition: all 1s;
+    padding-top: 165px;
+    a{
+        text-decoration: none;
+        color:black;
+        font-size: 20px;
+        font-weight: bold;
+        display: block;
+        transition: all 0.5s;
+        &:visited{
+            color:#FF7300;
+        }
+        &:hover{
+            background: rgba(0, 0, 0, 0.64);
+            color:white;
+        }
+        &:focus{
+            background: rgb(0, 0, 0);
+        }
+    }
+}
+
+.frame{
+    width: 1170px;
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    top:0;
+    border: 2px solid rgba(0, 0, 0, 0.53);
+    border-radius: 5px;
+    padding: 5px;
+    // display: none;//过渡效果不支持
+    opacity: 0;
+    transition: all 2s;
+}
+iframe{
+    width: inherit;
+    height: 100%;
+}
